@@ -53,15 +53,57 @@
             text-align: center;
             padding: 10px;
             background-color: #f0f0f0;
-            height: 20px; /* Reduced height to 20px */
+            display: flex;
+            flex-direction: column; /* Change to column layout */
+            align-items: center; /* Center items horizontally */
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            margin-right: 10px;
+        }
+
+        /* Added styles to make the inputs and button visible */
+        .input-group input[type="number"] {
+            width: 50px;
+            margin-right: 10px; /* Add some spacing between inputs */
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #007BFF; /* Keep the button's background color */
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
     <div id="controlPanel">
-        <label for="intervalInput">Interval (seconds):</label>
-        <input type="number" id="intervalInput" min="5" value="15">
-        <button id="updateButton">Update Interval</button>
+        <div class="input-group">
+            <label for="intervalInput">Interval (seconds):</label>
+            <input type="number" id="intervalInput" min="5" value="15">
+        </div>
+        <div class="input-group">
+            <label for="topLeftProb">Drum Probability:</label>
+            <input type="number" id="topLeftProb" min="0" max="100" value="95">
+            <label for="topRightProb">Bass Probability:</label>
+            <input type="number" id="topRightProb" min="0" max="100" value="40">
+            <label for="bottomLeftProb">Guitar 1 Probability:</label>
+            <input type="number" id="bottomLeftProb" min="0" max="100" value="80">
+            <label for="bottomRightProb">Guitar 2 Probability:</label>
+            <input type="number" id="bottomRightProb" min="0" max="100" value="40">
+        </div>
     </div>
 
     <div class="quadrant-container">
@@ -83,7 +125,10 @@
 
     <script>
         const intervalInput = document.getElementById("intervalInput");
-        let updateButton = document.getElementById("updateButton");
+        const topLeftProb = document.getElementById("topLeftProb");
+        const topRightProb = document.getElementById("topRightProb");
+        const bottomLeftProb = document.getElementById("bottomLeftProb");
+        const bottomRightProb = document.getElementById("bottomRightProb");
 
         function updateQuadrants() {
             const topLeft = document.getElementById("topLeft");
@@ -91,10 +136,10 @@
             const bottomLeft = document.getElementById("bottomLeft");
             const bottomRight = document.getElementById("bottomRight");
 
-            topLeft.classList.toggle("color", Math.random() > 0.05); // 95% probability of being blue
-            topRight.classList.toggle("color", Math.random() > 0.6); // 40% probability of being green
-            bottomLeft.classList.toggle("color", Math.random() > 0.2); // 80% probability of being red
-            bottomRight.classList.toggle("color", Math.random() > 0.6); // 40% probability of being yellow
+            topLeft.classList.toggle("color", Math.random() > (1 - (parseInt(topLeftProb.value, 10) / 100)));
+            topRight.classList.toggle("color", Math.random() > (1 - (parseInt(topRightProb.value, 10) / 100)));
+            bottomLeft.classList.toggle("color", Math.random() > (1 - (parseInt(bottomLeftProb.value, 10) / 100)));
+            bottomRight.classList.toggle("color", Math.random() > (1 - (parseInt(bottomRightProb.value, 10) / 100)));
 
             topLeft.style.backgroundColor = topLeft.classList.contains("color") ? "blue" : "white";
             topRight.style.backgroundColor = topRight.classList.contains("color") ? "green" : "white";
@@ -107,25 +152,8 @@
             setTimeout(updateQuadrants, (intervalInSeconds * 1000));
         }
 
-        // Function to clear event listeners from the button
-        function clearEventListeners(element) {
-            const newElement = element.cloneNode(true);
-            element.parentNode.replaceChild(newElement, element);
-            return newElement;
-        }
-
-        // Add event listener to update interval button
-        updateButton.addEventListener("click", function () {
-            updateButton.disabled = true; // Disable the button during the update
-            updateQuadrants(); // Start with the new interval immediately
-            // Clear event listeners from the button to prevent multiple clicks during the update
-            updateButton = clearEventListeners(updateButton);
-
-            // Re-enable the button after a delay (e.g., 2 seconds)
-            setTimeout(() => {
-                updateButton.disabled = false;
-            }, 200);
-        });
+        // Initialize the page with fixed colors and styling
+        updateQuadrants();
     </script>
 </body>
 </html>
