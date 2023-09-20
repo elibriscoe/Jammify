@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jammify</title> <!-- Updated title -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column; /* Change to column layout */
+        }
+
+        .quadrant-container {
+            flex: 1;
+            display: flex;
+            flex-direction: row; /* Arrange quadrants horizontally */
+        }
+
+        .quadrant {
+            flex: 1;
+            transition: background-color 1s;
+            background-color: white; /* Default background color */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px; /* Larger font size */
+            font-weight: bold;
+            font-family: sans-serif; /* Sans-serif font */
+        }
+
+        #controlPanel {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column; /* Change to column layout */
+            align-items: center; /* Center items horizontally */
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            margin-right: 10px;
+        }
+
+        /* Added styles to make the inputs and button visible */
+        .input-group input[type="number"] {
+            width: 50px;
+            margin-right: 10px; /* Add some spacing between inputs */
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #007BFF; /* Keep the button's background color */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="controlPanel">
+        <div class="input-group">
+            <label for="intervalInput">Interval (seconds):</label>
+            <input type="number" id="intervalInput" min="5" value="15">
+        </div>
+        <div class="input-group">
+            <label for="topLeftProb">Drum Probability:</label>
+            <input type="number" id="topLeftProb" min="0" max="100" value="95">
+            <label for="bottomLeftProb">Bass Probability:</label>
+            <input type="number" id="bottomLeftProb" min="0" max="100" value="80">
+            <label for="topMiddleProb">Vocal Probability:</label>
+            <input type="number" id="topMiddleProb" min="0" max="100" value="25">
+            <label for="topRightProb">Guitar 1 Probability:</label>
+            <input type="number" id="topRightProb" min="0" max="100" value="40">
+            <label for="bottomMiddleProb">Guitar 2 Probability:</label>
+            <input type="number" id="bottomMiddleProb" min="0" max="100" value="40">
+            <label for="bottomRightProb">Guitar 3 Probability:</label>
+            <input type="number" id="bottomRightProb" min="0" max="100" value="40">
+        </div>
+    </div>
+
+    <div class="quadrant-container">
+        <div class="quadrant" id="topLeft">
+            Drums
+        </div>
+        <div class="quadrant" id="topMiddle">
+            Vocals
+        </div>
+        <div class="quadrant" id="topRight">
+            Guitar 1
+        </div>
+    </div>
+    <div class="quadrant-container">
+        <div class="quadrant" id="bottomLeft">
+            Bass
+        </div>
+        <div class="quadrant" id="bottomMiddle">
+            Guitar 2
+        </div>
+        <div class="quadrant" id="bottomRight">
+            Guitar 3
+        </div>
+    </div>
+
+    <script>
+        const intervalInput = document.getElementById("intervalInput");
+        const topLeftProb = document.getElementById("topLeftProb");
+        const topRightProb = document.getElementById("topRightProb");
+        const bottomLeftProb = document.getElementById("bottomLeftProb");
+        const bottomRightProb = document.getElementById("bottomRightProb");
+
+        function updateQuadrants() {
+            const topLeft = document.getElementById("topLeft");
+            const topMiddle = document.getElementById("topMiddle");
+            const topRight = document.getElementById("topRight");
+            const bottomLeft = document.getElementById("bottomLeft");
+            const bottomMiddle = document.getElementById("bottomMiddle");
+            const bottomRight = document.getElementById("bottomRight");
+
+            topLeft.classList.toggle("color", Math.random() > (1 - (parseInt(topLeftProb.value, 10) / 100)));
+            topMiddle.classList.toggle("color", Math.random() > (1 - (parseInt(topMiddleProb.value, 10) / 100)));
+            topRight.classList.toggle("color", Math.random() > (1 - (parseInt(topRightProb.value, 10) / 100)));
+            bottomLeft.classList.toggle("color", Math.random() > (1 - (parseInt(bottomLeftProb.value, 10) / 100)));
+            bottomMiddle.classList.toggle("color", Math.random() > (1 - (parseInt(bottomMiddleProb.value, 10) / 100)));
+            bottomRight.classList.toggle("color", Math.random() > (1 - (parseInt(bottomRightProb.value, 10) / 100)));
+
+            topLeft.style.backgroundColor = topLeft.classList.contains("color") ? "blue" : "white";
+            topMiddle.style.backgroundColor = topMiddle.classList.contains("color") ? "purple" : "white";
+            topRight.style.backgroundColor = topRight.classList.contains("color") ? "green" : "white";
+            bottomLeft.style.backgroundColor = bottomLeft.classList.contains("color") ? "red" : "white";
+            bottomMiddle.style.backgroundColor = bottomMiddle.classList.contains("color") ? "orange" : "white";
+            bottomRight.style.backgroundColor = bottomRight.classList.contains("color") ? "yellow" : "white";
+
+            const intervalInSeconds = parseInt(intervalInput.value, 10);
+
+            // Set the next update after the specified interval
+            setTimeout(updateQuadrants, (intervalInSeconds * 1000));
+        }
+
+        // Initialize the page with fixed colors and styling
+        updateQuadrants();
+    </script>
+</body>
+</html>
